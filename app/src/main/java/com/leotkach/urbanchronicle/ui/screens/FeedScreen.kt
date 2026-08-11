@@ -15,8 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Category
-import androidx.compose.material.icons.outlined.Login
-import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -38,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.leotkach.urbanchronicle.data.ArticleWithCategory
 import com.leotkach.urbanchronicle.data.ChronicleRepository
+import com.leotkach.urbanchronicle.ui.components.AccountMenu
 import com.leotkach.urbanchronicle.ui.components.AppScaffold
 import com.leotkach.urbanchronicle.ui.components.SectionLabel
 import java.text.SimpleDateFormat
@@ -68,34 +67,15 @@ fun FeedScreen(
     AppScaffold(
         title = "UrbanChronicle",
         subtitle = "Якби класики дивилися на нашу дійсність - місто, вулиці, побут.",
+        trailing = {
+            AccountMenu(
+                session = session,
+                onLogin = onLogin,
+                onLogout = { repository.logout() },
+            )
+        },
         scrollable = true,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = if (session != null) "Ви: ${session!!.name}" else "Гість (лише читання)",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            if (session != null) {
-                OutlinedButton(onClick = { repository.logout() }) {
-                    Icon(Icons.Outlined.Logout, contentDescription = null)
-                    Spacer(Modifier.padding(4.dp))
-                    Text("Вихід")
-                }
-            } else {
-                OutlinedButton(onClick = onLogin) {
-                    Icon(Icons.Outlined.Login, contentDescription = null)
-                    Spacer(Modifier.padding(4.dp))
-                    Text("Вхід")
-                }
-            }
-        }
-
-        Spacer(Modifier.height(14.dp))
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.fillMaxWidth(),

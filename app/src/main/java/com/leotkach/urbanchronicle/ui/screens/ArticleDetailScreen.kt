@@ -1,18 +1,14 @@
 package com.leotkach.urbanchronicle.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -30,13 +26,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.leotkach.urbanchronicle.data.CommentEntity
 import com.leotkach.urbanchronicle.data.ChronicleRepository
+import com.leotkach.urbanchronicle.ui.components.AccountAvatar
 import com.leotkach.urbanchronicle.ui.components.AppScaffold
 import com.leotkach.urbanchronicle.ui.components.SectionLabel
 import java.text.SimpleDateFormat
@@ -225,46 +220,4 @@ private fun CommentAccountRow(
             }
         }
     }
-}
-
-@Composable
-private fun AccountAvatar(name: String) {
-    val initials = remember(name) {
-        name.split(Regex("\\s+"))
-            .filter { it.isNotBlank() }
-            .take(2)
-            .map { it.first().uppercaseChar() }
-            .joinToString("")
-            .ifEmpty { "?" }
-    }
-    val bg = remember(name) { avatarColor(name) }
-    Box(
-        modifier = Modifier
-            .size(44.dp)
-            .clip(CircleShape)
-            .background(bg),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = initials,
-            color = Color.White,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-        )
-    }
-}
-
-private fun avatarColor(seed: String): Color {
-    val palette = listOf(
-        Color(0xFF2F5D50),
-        Color(0xFF1D4E89),
-        Color(0xFF7A3E2E),
-        Color(0xFF4A5568),
-        Color(0xFF5B4B8A),
-        Color(0xFF0F766E),
-    )
-    val index = seed.fold(0) { acc, c -> acc * 31 + c.code } .mod(palette.size).let {
-        if (it < 0) it + palette.size else it
-    }
-    return palette[index]
 }

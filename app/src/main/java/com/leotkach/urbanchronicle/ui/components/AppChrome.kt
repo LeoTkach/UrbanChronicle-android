@@ -3,6 +3,7 @@ package com.leotkach.urbanchronicle.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -28,6 +30,7 @@ fun AppScaffold(
     title: String,
     subtitle: String? = null,
     onBack: (() -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
     scrollable: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -63,7 +66,19 @@ fun AppScaffold(
                 .padding(bottom = 12.dp)
                 .then(if (scrollable) Modifier.verticalScroll(rememberScrollState()) else Modifier),
         ) {
-            Text(text = title, style = MaterialTheme.typography.displaySmall)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier.weight(1f),
+                )
+                if (trailing != null) {
+                    trailing()
+                }
+            }
             if (subtitle != null) {
                 Spacer(Modifier.height(6.dp))
                 Text(
