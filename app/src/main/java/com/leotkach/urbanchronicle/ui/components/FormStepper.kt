@@ -1,7 +1,6 @@
 package com.leotkach.urbanchronicle.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -66,11 +65,7 @@ fun FormStepper(
 private fun StepCircle(number: Int, done: Boolean, active: Boolean) {
     val bg = when {
         done || active -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.surface
-    }
-    val border = when {
-        done || active -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.outline
+        else -> MaterialTheme.colorScheme.surfaceVariant
     }
     val content = when {
         done || active -> MaterialTheme.colorScheme.onPrimary
@@ -80,8 +75,7 @@ private fun StepCircle(number: Int, done: Boolean, active: Boolean) {
         modifier = Modifier
             .size(32.dp)
             .clip(CircleShape)
-            .background(bg)
-            .border(1.5.dp, border, CircleShape),
+            .background(bg),
         contentAlignment = Alignment.Center,
     ) {
         if (done) {
