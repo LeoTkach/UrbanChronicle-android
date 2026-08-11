@@ -7,6 +7,18 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
+interface UserDao {
+    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    suspend fun findByEmail(email: String): UserEntity?
+
+    @Query("SELECT COUNT(*) FROM users")
+    suspend fun count(): Int
+
+    @Insert
+    suspend fun insert(user: UserEntity): Long
+}
+
+@Dao
 interface CategoryDao {
     @Query("SELECT * FROM categories ORDER BY name COLLATE NOCASE")
     fun observeAll(): Flow<List<CategoryEntity>>
@@ -40,10 +52,35 @@ interface ArticleDao {
         FROM articles a
         INNER JOIN categories c ON c.id = a.categoryId
         WHERE (:categoryId IS NULL OR a.categoryId = :categoryId)
+          AND (
+            :query = '' OR
+            a.title LIKE '%' || :query || '%' COLLATE NOCASE OR
+            a.body LIKE '%' || :query || '%' COLLATE NOCASE OR
+            a.author LIKE '%' || :query || '%' COLLATE NOCASE
+          )
         ORDER BY a.createdAt DESC
         """,
     )
-    fun observeFeed(categoryId: Long?): Flow<List<ArticleWithCategory>>
+    fun observeFeed(categoryId: Long?, query: String): Flow<List<ArticleWithCategory>>
+
+    @Query(
+        """
+        SELECT a.id AS id, a.title AS title, a.body AS body, a.author AS author,
+               a.categoryId AS categoryId, c.name AS categoryName, a.createdAt AS createdAt,
+               (SELECT COUNT(*) FROM comments cm WHERE cm.articleId = a.id) AS commentCount
+        FROM articles a
+        INNER JOIN categories c ON c.id = a.categoryId
+        WHERE (:categoryId IS NULL OR a.categoryId = :categoryId)
+          AND (
+            :query = '' OR
+            a.title LIKE '%' || :query || '%' COLLATE NOCASE OR
+            a.body LIKE '%' || :query || '%' COLLATE NOCASE OR
+            a.author LIKE '%' || :query || '%' COLLATE NOCASE
+          )
+        ORDER BY a.createdAt DESC
+        """,
+    )
+    suspend fun loadFeed(categoryId: Long?, query: String): List<ArticleWithCategory>
 
     @Query(
         """

@@ -5,6 +5,15 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+@Entity(tableName = "users")
+data class UserEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val email: String,
+    /** Lab demo: plain password (not for production). */
+    val password: String,
+)
+
 @Entity(tableName = "categories")
 data class CategoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -61,4 +70,10 @@ data class ArticleWithCategory(
     val categoryName: String,
     val createdAt: Long,
     val commentCount: Int,
+)
+
+data class SessionUser(
+    val id: Long,
+    val name: String,
+    val email: String,
 )

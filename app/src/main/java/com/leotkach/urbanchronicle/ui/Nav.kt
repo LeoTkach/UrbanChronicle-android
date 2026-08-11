@@ -2,6 +2,7 @@ package com.leotkach.urbanchronicle.ui
 
 object Routes {
     const val Feed = "feed"
+    const val Login = "login"
     const val Categories = "categories"
     const val ArticleNew = "article/new"
     const val ArticleDetail = "article/{id}"

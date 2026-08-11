@@ -48,8 +48,10 @@ import kotlinx.coroutines.launch
 fun ArticleDetailScreen(
     articleId: Long,
     repository: ChronicleRepository,
+    canEdit: Boolean,
     onBack: () -> Unit,
     onEdit: () -> Unit,
+    onLogin: () -> Unit,
     onDeleted: () -> Unit,
 ) {
     val article by repository.observeArticle(articleId).collectAsStateWithLifecycle(null)
@@ -80,9 +82,13 @@ fun ArticleDetailScreen(
         )
 
         Spacer(Modifier.height(20.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Button(onClick = onEdit) { Text("Редагувати") }
-            OutlinedButton(onClick = { confirmDelete = true }) { Text("Видалити") }
+        if (canEdit) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Button(onClick = onEdit) { Text("Редагувати") }
+                OutlinedButton(onClick = { confirmDelete = true }) { Text("Видалити") }
+            }
+        } else {
+            OutlinedButton(onClick = onLogin) { Text("Увійти, щоб редагувати") }
         }
 
         Spacer(Modifier.height(28.dp))

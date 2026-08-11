@@ -6,11 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [CategoryEntity::class, ArticleEntity::class, CommentEntity::class],
-    version = 1,
+    entities = [
+        UserEntity::class,
+        CategoryEntity::class,
+        ArticleEntity::class,
+        CommentEntity::class,
+    ],
+    version = 2,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun users(): UserDao
     abstract fun categories(): CategoryDao
     abstract fun articles(): ArticleDao
     abstract fun comments(): CommentDao
@@ -25,13 +31,33 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "urban_chronicle.db",
-                ).build().also { instance = it }
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .also { instance = it }
             }
         }
     }
 }
 
 suspend fun AppDatabase.ensureSeeded() {
+    if (users().count() == 0) {
+        users().insert(
+            UserEntity(
+                name = "Редакція",
+                email = "leo@urban.local",
+                password = "chronicle123",
+            ),
+        )
+        users().insert(
+            UserEntity(
+                name = "Архів",
+                email = "arhiv@urban.local",
+                password = "chronicle123",
+            ),
+        )
+    }
+
     if (categories().count() > 0) return
 
     val poglyad = categories().insert(CategoryEntity(name = "Погляд"))
